@@ -511,7 +511,7 @@ void openHotkeyConfig()
         gtk_tree_store_set(hotkey_store, &iter, 
                 COMMAND_COLUMN, optionName,
                 KEY_COLUMN,
-#if SDL_VERSION_ATLEAST(2, 0, 0)                                                    
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 				SDL_GetKeyName(keycode),
 #else
 				SDL_GetKeyName((SDLKey)keycode),
@@ -1969,7 +1969,7 @@ void changeState(GtkAction *action, GtkRadioAction *current, gpointer data)
 #define SDLK_RMETA 0
 #endif
 // Adapted from Gens/GS.  Converts a GDK key value into an SDL key value.
-unsigned short GDKToSDLKeyval(int gdk_key)
+int32_t GDKToSDLKeyval(int gdk_key)
 {
 	if (!(gdk_key & 0xFF00))
 	{
@@ -1995,7 +1995,7 @@ unsigned short GDKToSDLKeyval(int gdk_key)
 	}
 	
 	// Non-ASCII symbol.
-	static const uint16_t gdk_to_sdl_table[0x100] =
+	static const int32_t gdk_to_sdl_table[0x100] =
 	{
 		// 0x00 - 0x0F
 		0x0000, 0x0000, 0x0000, 0x0000,
@@ -2094,7 +2094,7 @@ unsigned short GDKToSDLKeyval(int gdk_key)
 		0x0000, 0x0000, 0x0000, SDLK_DELETE,		
 	};
 	
-	unsigned short sdl_key = gdk_to_sdl_table[gdk_key & 0xFF];
+	int32_t sdl_key = gdk_to_sdl_table[gdk_key & 0xFF];
 	if (sdl_key == 0)
 	{
 		// Unhandled GDK key.
@@ -2149,6 +2149,9 @@ gint convertKeypress(GtkWidget *grab, GdkEventKey *event, gpointer user_data)
 	
 	// Create an SDL event from the keypress.
 	sdlev.key.keysym.sym = sdlkey;
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	sdlev.key.keysym.scancode = SDL_GetScancodeFromKey(sdlkey);
+#endif
 	if (sdlkey != 0)
 	{
 		SDL_PushEvent(&sdlev);
@@ -2157,9 +2160,9 @@ gint convertKeypress(GtkWidget *grab, GdkEventKey *event, gpointer user_data)
 		if(keystate == 0 || gtk_window_is_active(GTK_WINDOW(MainWindow)))
 		{
 			#if SDL_VERSION_ATLEAST(2, 0, 0)
-			// Not sure how to do this yet with SDL 2.0
-			// TODO - SDL 2.0
-			//SDL_GetKeyboardState(NULL)[SDL_GetScancodeFromKey(sdlkey)] = keystate;
+			// SDL 2.0 returns the keyboard state as const, but we can still
+			// control the keyboard state the same way with a simple cast.
+			((Uint8 *)SDL_GetKeyboardState(NULL))[SDL_GetScancodeFromKey(sdlkey)] = keystate;
 			#else
 			SDL_GetKeyState(NULL)[sdlkey] = keystate;
 			#endif

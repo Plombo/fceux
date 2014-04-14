@@ -110,7 +110,7 @@ void loadStateFrom();
 void quickLoad();
 void quickSave();
 void changeState(GtkAction *action, GtkRadioAction *current, gpointer data);
-unsigned short GDKToSDLKeyval(int gdk_key);
+int32_t GDKToSDLKeyval(int gdk_key);
 gint convertKeypress(GtkWidget *grab, GdkEventKey *event, gpointer user_data);
 gint handleMouseClick(GtkWidget* widget, GdkEvent *event, gpointer callback_data);
 void handle_resize(GtkWindow* win, GdkEvent* event, gpointer data);

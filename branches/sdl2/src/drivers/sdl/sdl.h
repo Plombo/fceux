@@ -2,7 +2,7 @@
 #define __FCEU_SDL_H
 
 #if _SDL2
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #else
 #include <SDL.h>
 #endif

@@ -310,8 +310,10 @@ DriverInitialize(FCEUGI *gi)
 	if(InitJoysticks())
 		inited|=2;
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 	if(InitGameControllers())
 		inited|=8;
+#endif
 
 	int fourscore=0;
 	g_config->getOption("SDL.FourScore", &fourscore);
@@ -332,8 +334,10 @@ DriverKill()
 	if (!noconfig)
 		g_config->save();
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 	if(inited&8)
 		KillGameControllers();
+#endif
 	if(inited&2)
 		KillJoysticks();
 	if(inited&4)

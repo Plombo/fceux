@@ -279,11 +279,17 @@ int InitVideo(FCEUGI *gi)
 		                             0, 0,  // Res not specified in full-screen mode
 		                             SDL_WINDOW_FULLSCREEN_DESKTOP);
 	} else {
-		s_window = SDL_CreateWindow( window_name,
-		                             SDL_WINDOWPOS_UNDEFINED,
-		                             SDL_WINDOWPOS_UNDEFINED,
-		                             xres, yres,
-		                             0);
+#if defined(_GTK) && defined(SDL_VIDEO_DRIVER_X11)
+		if(noGui == 0) {
+			s_window = SDL_CreateWindowFrom((void*)GDK_WINDOW_XID (gtk_widget_get_window(evbox)));
+		}
+		else
+#endif
+			s_window = SDL_CreateWindow( window_name,
+				                         SDL_WINDOWPOS_UNDEFINED,
+				                         SDL_WINDOWPOS_UNDEFINED,
+				                         xres, yres,
+				                         0);
 	}
 
 	// This stuff all applies regardless of full-screen vs windowed mode.

@@ -1,7 +1,7 @@
 #ifndef __FCEU_SDL_VIDEO_H
 #define __FCEU_SDL_VIDEO_H
 #ifdef _SDL2
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #else
 #include <SDL/SDL.h>
 #endif
