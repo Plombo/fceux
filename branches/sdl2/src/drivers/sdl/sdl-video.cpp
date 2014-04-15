@@ -280,7 +280,7 @@ int InitVideo(FCEUGI *gi)
 		                             SDL_WINDOW_FULLSCREEN_DESKTOP);
 	} else {
 #if defined(_GTK) && defined(SDL_VIDEO_DRIVER_X11)
-		if(noGui == 0) {
+		if(noGui == 0 && strcmp(SDL_GetCurrentVideoDriver(), "x11") == 0) {
 			s_window = SDL_CreateWindowFrom((void*)GDK_WINDOW_XID (gtk_widget_get_window(evbox)));
 		}
 		else
